@@ -1,0 +1,14 @@
+aiogram==3.28.2
+python-dotenv==1.0.0
+aiohttp>=3.12.14,<4.0
+phonenumbers==9.0.26
+python-dateutil==2.9.0.post0
+python-whois==0.9.6
+six==1.17.0
+maigret==0.6.1
+dnspython>=2.6.1
+cryptography>=43.0.3
+ghunt>=2.3.4
+holehe>=1.61
+trio>=0.24.0
+redis>=5.0.0

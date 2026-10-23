@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    profiles: ["redis"]
+
+  telegram-bot:
+    build: .
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - ${HOME}/.malfrats/ghunt:/root/.malfrats/ghunt
+    environment:
+      REDIS_URL: ${REDIS_URL:-}
