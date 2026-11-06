@@ -2,7 +2,7 @@
 
 ![Bot Interface](assets/image.png)
 
-Telegram bot for ID lookup and OSINT-style checks (username, phone, email, Dutch vehicle plates, domain/IP HTML reports).
+Telegram bot for OSINT-style checks (username, phone, email, Dutch vehicle plates, domain/IP HTML reports).
 
 ## Quick start
 

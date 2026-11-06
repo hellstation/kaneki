@@ -36,7 +36,6 @@ def main_keyboard() -> InlineKeyboardMarkup:
 def functions_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="ID", callback_data="id")],
             [
                 InlineKeyboardButton(text="Username", callback_data="osint_tool:username"),
                 InlineKeyboardButton(text="Phone", callback_data="osint_tool:phone"),
@@ -78,35 +77,6 @@ def osint_result_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text="Back", callback_data="functions"),
                 InlineKeyboardButton(text="Main Menu", callback_data="main"),
             ],
-        ]
-    )
-
-
-def id_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Get ID", callback_data="id_get")],
-            [InlineKeyboardButton(text="Back", callback_data="functions")],
-        ]
-    )
-
-
-def id_nav_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text="Back", callback_data="id"),
-                InlineKeyboardButton(text="Main Menu", callback_data="main"),
-            ],
-        ]
-    )
-
-
-def id_another_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Get Another ID", callback_data="id_get")],
-            [InlineKeyboardButton(text="Main Menu", callback_data="main")],
         ]
     )
 

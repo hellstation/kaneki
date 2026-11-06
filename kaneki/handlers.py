@@ -1,4 +1,3 @@
-import html
 import logging
 
 from aiogram import F, Router
@@ -22,9 +21,6 @@ from .username_osint import analyze_username
 from .vehicle_osint import analyze_vehicle_plate
 from .ui import (
     functions_keyboard,
-    id_another_keyboard,
-    id_keyboard,
-    id_nav_keyboard,
     info_back_keyboard,
     main_keyboard,
     osint_prompt_keyboard,
@@ -41,7 +37,6 @@ FUNCTIONS_SCREEN_TEXT = "Functions"
 ABOUT_TEXT = (
     "<b>kaneki — Initial Data Analysis.</b>\n\n"
     "A toolbox for inspecting data.\n\n"
-    "<b>ID</b> — extract a user/chat ID from a forwarded message.\n\n"
     "<b>OSINT</b> — look up a username, phone number, "
     "Dutch vehicle plate, email (SMTP, Google infrastructure, connections), "
     "or WHOIS / IP (domain or IP HTML report: WHOIS, DNS, SSL, CVE)."
@@ -50,8 +45,6 @@ ABOUT_TEXT = (
 
 class MenuStates(StatesGroup):
     main_menu = State()
-    id_menu = State()
-    get_id_waiting = State()
     osint_waiting = State()
 
 
@@ -178,43 +171,6 @@ async def cancel_cb(callback: CallbackQuery, state: FSMContext) -> None:
         target=target,
     )
     await state.set_state(MenuStates.main_menu)
-
-
-@router.callback_query(F.data == "id")
-async def id_menu_cb(callback: CallbackQuery, state: FSMContext) -> None:
-    await callback.answer()
-    target = _callback_message(callback)
-    if target is None:
-        return
-    await show_screen(
-        bot=callback.bot,
-        chat_id=target.chat.id,
-        state=state,
-        text="ID Tools:",
-        keyboard=id_keyboard(),
-        target=target,
-    )
-    await state.set_state(MenuStates.id_menu)
-
-
-@router.callback_query(F.data == "id_get")
-async def get_id_cb(callback: CallbackQuery, state: FSMContext) -> None:
-    await callback.answer()
-    target = _callback_message(callback)
-    if target is None:
-        return
-    current_state = await state.get_state()
-    already_waiting = bool(current_state and str(current_state).endswith("get_id_waiting"))
-    await show_screen(
-        bot=callback.bot,
-        chat_id=target.chat.id,
-        state=state,
-        text="Forward a message to get the sender's ID:",
-        keyboard=id_nav_keyboard(),
-        target=target,
-        force_new=already_waiting,
-    )
-    await state.set_state(MenuStates.get_id_waiting)
 
 
 @router.callback_query(F.data.startswith("osint_tool:"))
@@ -370,43 +326,6 @@ async def osint_query_message(message: Message, state: FSMContext) -> None:
         return
 
     await state.set_state(MenuStates.osint_waiting)
-
-
-@router.message(F.forward_origin, MenuStates.get_id_waiting)
-async def handle_forwarded_message(message: Message, state: FSMContext) -> None:
-    origin = message.forward_origin
-    text = "Unable to extract ID from this message."
-    parse_mode = None
-
-    if origin is not None:
-        sender_user = getattr(origin, "sender_user", None)
-        origin_chat = getattr(origin, "chat", None)
-        if sender_user is not None:
-            user_id = sender_user.id
-            username = sender_user.username or "No username"
-            text = (
-                f"<b>Sender ID:</b> <code>{user_id}</code>\n"
-                f"<b>Username:</b> @{html.escape(username)}"
-            )
-            parse_mode = "HTML"
-        elif origin_chat is not None:
-            chat_id = origin_chat.id
-            chat_title = html.escape(getattr(origin_chat, "title", None) or "Unknown chat")
-            text = (
-                f"<b>Chat ID:</b> <code>{chat_id}</code>\n"
-                f"<b>Chat:</b> {chat_title}"
-            )
-            parse_mode = "HTML"
-
-    await show_screen(
-        bot=message.bot,
-        chat_id=message.chat.id,
-        state=state,
-        text=text,
-        keyboard=id_another_keyboard(),
-        parse_mode=parse_mode,
-        force_new=True,
-    )
 
 
 @router.callback_query()
